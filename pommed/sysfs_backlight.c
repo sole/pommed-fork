@@ -113,7 +113,7 @@ sysfs_backlight_get(void)
 
   if (bck_driver == SYSFS_DRIVER_NONE)
     return 0;
-
+logdebug("sole ACTUAL brightness opening file = %s\n", actual_brightness[bck_driver]);
   fd = open(actual_brightness[bck_driver], O_RDONLY);
   if (fd < 0)
     {
@@ -132,7 +132,7 @@ sysfs_backlight_get(void)
       return 0;
     }
   close(fd);
-
+logdebug("sole Read backlight=%s\n", buffer);
   return atoi(buffer);
 }
 
@@ -188,6 +188,7 @@ sysfs_backlight_set(int value)
   fprintf(fp, "%d", value);
 
   fclose(fp);
+logdebug("sole opened file = %s, wrote %d\n", brightness[bck_driver], value);
 }
 
 void
@@ -226,7 +227,7 @@ sysfs_backlight_step(int dir)
 
   mbpdbus_send_lcd_backlight(newval, val, LCD_USER);
 
-  lcd_bck_info.level = newval;
+	  lcd_bck_info.level = newval;
 }
 
 
@@ -359,6 +360,7 @@ sysfs_backlight_probe(int driver)
   bck_driver = driver;
 
   lcd_bck_info.max = sysfs_backlight_get_max();
+logdebug("sole the driver is %d, max=%d\n", driver, lcd_bck_info.max);
 
   /* Now we can fix the config */
   sysfs_backlight_fix_config();
